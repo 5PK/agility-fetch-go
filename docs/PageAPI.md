@@ -24,20 +24,20 @@ import (
 	"context"
 	"fmt"
 	"os"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func main() {
 	guid := "guid_example" // string | The instance GUID, available from the API Keys section.
-	apitype := openapiclient.APIType("preview") // APIType | The API type (preview, fetch).
+	apitype := agilityClient.APIType("preview") // APIType | The API type (preview, fetch).
 	locale := "locale_example" // string | The locale code you want to retrieve content for.
 	channel := "channel_example" // string | The reference name of the digital channel of the sitemap to return. If you only have one channel, your channel reference name is likely 'website'.
 	path := "path_example" // string | The path of the page (optional)
 	contentLinkDepth := int32(56) // int32 | The maximum level to expand linked content from this item (optional) (default to 2)
 	expandAllContentLinks := true // bool | Whether or not to expand entire linked content references, includings lists and items that are rendered in the CMS as Grid or Link and linked to modules or linked items on this page. (optional) (default to false)
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 	resp, r, err := apiClient.PageAPI.PageChannelGet(context.Background(), guid, apitype, locale, channel).Path(path).ContentLinkDepth(contentLinkDepth).ExpandAllContentLinks(expandAllContentLinks).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `PageAPI.PageChannelGet``: %v\n", err)
@@ -107,19 +107,19 @@ import (
 	"context"
 	"fmt"
 	"os"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func main() {
 	guid := "guid_example" // string | The instance GUID, available from the API Keys section.
-	apitype := openapiclient.APIType("preview") // APIType | The API type (preview, fetch).
+	apitype := agilityClient.APIType("preview") // APIType | The API type (preview, fetch).
 	locale := "locale_example" // string | The locale code you want to retrieve content for.
 	id := int32(56) // int32 | The unique page ID of the page you wish to retrieve in the current locale.
 	contentLinkDepth := int32(56) // int32 | The maximum level to expand linked content from this item (optional) (default to 2)
 	expandAllContentLinks := true // bool | Whether or not to expand entire linked content references, includings lists and items that are rendered in the CMS as Grid or Link and linked to modules or linked items on this page. (optional) (default to false)
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 	resp, r, err := apiClient.PageAPI.PageIdGet(context.Background(), guid, apitype, locale, id).ContentLinkDepth(contentLinkDepth).ExpandAllContentLinks(expandAllContentLinks).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `PageAPI.PageIdGet``: %v\n", err)

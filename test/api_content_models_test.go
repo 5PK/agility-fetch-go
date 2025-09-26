@@ -10,7 +10,7 @@ Testing ContentModelsAPIService
 package agilitycms
 
 import (
-	openapiclient "agility-fetch-go"
+	agilityClient "agility-fetch-go"
 	"context"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -19,15 +19,15 @@ import (
 
 func Test_agilitycms_ContentModelsAPIService(t *testing.T) {
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 
 	t.Run("Test ContentModelsAPIService ContentmodelsGet", func(t *testing.T) {
 
 		t.Skip("skip test") // remove to run test
 
 		var guid string
-		var apitype openapiclient.APIType
+		var apitype agilityClient.APIType
 
 		resp, httpRes, err := apiClient.ContentModelsAPI.ContentmodelsGet(context.Background(), guid, apitype).Execute()
 

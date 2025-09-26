@@ -17,7 +17,7 @@ import (
 	"strconv"
 	"testing"
 	"github.com/joho/godotenv"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

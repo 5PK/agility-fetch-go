@@ -14,20 +14,20 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func Test_agilitycms_ListAPIService(t *testing.T) {
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 
 	t.Run("Test ListAPIService ListReferenceNameGet", func(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
 
 		var guid string
-		var apitype openapiclient.APIType
+		var apitype agilityClient.APIType
 		var locale string
 		var referenceName string
 

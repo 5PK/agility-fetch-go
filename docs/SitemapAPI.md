@@ -24,17 +24,17 @@ import (
 	"context"
 	"fmt"
 	"os"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func main() {
 	guid := "guid_example" // string | The instance GUID, available from the API Keys section.
-	apitype := openapiclient.APIType("preview") // APIType | The Type of API - fetch or preview.
+	apitype := agilityClient.APIType("preview") // APIType | The Type of API - fetch or preview.
 	locale := "locale_example" // string | The locale code you want to retreive content for
 	channelName := "channelName_example" // string | The reference name of the digital channel of the sitemap to return. If you only have one channel, your channel reference name is likely 'website'.
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 	resp, r, err := apiClient.SitemapAPI.SitemapFlatChannelNameGet(context.Background(), guid, apitype, locale, channelName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `SitemapAPI.SitemapFlatChannelNameGet``: %v\n", err)
@@ -101,17 +101,17 @@ import (
 	"context"
 	"fmt"
 	"os"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func main() {
 	guid := "guid_example" // string | The instance GUID, available from the API Keys section.
-	apitype := openapiclient.APIType("preview") // APIType | The Type of API - fetch or preview.
+	apitype := agilityClient.APIType("preview") // APIType | The Type of API - fetch or preview.
 	locale := "locale_example" // string | The locale code you want to retreive content for
 	channelName := "channelName_example" // string | The reference name of the digital channel of the sitemap to return. If you only have one channel, your channel reference name is likely 'website'.
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 	resp, r, err := apiClient.SitemapAPI.SitemapNestedChannelNameGet(context.Background(), guid, apitype, locale, channelName).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `SitemapAPI.SitemapNestedChannelNameGet``: %v\n", err)

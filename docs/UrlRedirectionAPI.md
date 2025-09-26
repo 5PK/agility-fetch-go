@@ -24,16 +24,16 @@ import (
 	"fmt"
 	"os"
      
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func main() {
 	guid := "guid_example" // string | The instance GUID, available from the API Keys section.
-	apitype := openapiclient.APIType("preview") // APIType | The Type of API - fetch or preview.
+	apitype := agilityClient.APIType("preview") // APIType | The Type of API - fetch or preview.
 	lastAccessDate := time.Now() // string | The last access date/time that the URL Redirections list was previously accessed, eg: 2020-09-24T10:00:00.00-04:00. (optional)
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 	resp, r, err := apiClient.UrlRedirectionAPI.UrlredirectionGet(context.Background(), guid, apitype).LastAccessDate(lastAccessDate).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `UrlRedirectionAPI.UrlredirectionGet``: %v\n", err)

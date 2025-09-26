@@ -23,16 +23,16 @@ import (
 	"context"
 	"fmt"
 	"os"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func main() {
 	guid := "guid_example" // string | The instance GUID, available from the API Keys section.
-	apitype := openapiclient.APIType("preview") // APIType | The Type of API - fetch or preview.
+	apitype := agilityClient.APIType("preview") // APIType | The Type of API - fetch or preview.
 	id := int32(56) // int32 | The galleryID of the requested gallery.
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 	resp, r, err := apiClient.GalleryAPI.GalleryIdGet(context.Background(), guid, apitype, id).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `GalleryAPI.GalleryIdGet``: %v\n", err)

@@ -10,7 +10,7 @@ Testing GalleryAPIService
 package agilitycms
 
 import (
-	openapiclient "agility-fetch-go"
+	agilityClient "agility-fetch-go"
 	"context"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -19,15 +19,15 @@ import (
 
 func Test_agilitycms_GalleryAPIService(t *testing.T) {
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 
 	t.Run("Test GalleryAPIService GalleryIdGet", func(t *testing.T) {
 
 		t.Skip("skip test") // remove to run test
 
 		var guid string
-		var apitype openapiclient.APIType
+		var apitype agilityClient.APIType
 		var id int32
 
 		resp, httpRes, err := apiClient.GalleryAPI.GalleryIdGet(context.Background(), guid, apitype, id).Execute()

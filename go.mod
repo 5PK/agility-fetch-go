@@ -1,4 +1,4 @@
-module agility-fetch-go
+module github.com/5PK/agility-fetch-go
 
 go 1.18
 

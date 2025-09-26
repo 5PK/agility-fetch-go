@@ -23,12 +23,12 @@ import (
 	"context"
 	"fmt"
 	"os"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func main() {
 	guid := "guid_example" // string | The instance GUID, available from the API Keys section.
-	apitype := openapiclient.APIType("preview") // APIType | The API type (preview, fetch).
+	apitype := agilityClient.APIType("preview") // APIType | The API type (preview, fetch).
 	locale := "locale_example" // string | The locale code you want to retrieve content for.
 	referenceName := "referenceName_example" // string | The unique reference name of the content list you wish to retrieve in the current locale. Reference names must be ALL lowercase.
 	contentLinkDepth := int32(56) // int32 | [Optional] The depth of list items. Maximum allowed is 5. (optional)
@@ -40,8 +40,8 @@ func main() {
 	sort := "sort_example" // string | [Optional] The field to sort the results by. Example fields.title or properties.created, seo.metaDescription (optional)
 	direction := "direction_example" // string | [Optional] The direction to sort the results by. Default is asc. Valid values are asc, desc. (optional)
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 	resp, r, err := apiClient.ListAPI.ListReferenceNameGet(context.Background(), guid, apitype, locale, referenceName).ContentLinkDepth(contentLinkDepth).ExpandAllContentLinks(expandAllContentLinks).Fields(fields).Take(take).Skip(skip).Filter(filter).Sort(sort).Direction(direction).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `ListAPI.ListReferenceNameGet``: %v\n", err)

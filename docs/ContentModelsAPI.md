@@ -23,16 +23,16 @@ import (
 	"context"
 	"fmt"
 	"os"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func main() {
 	guid := "guid_example" // string | The instance GUID, available from the API Keys section.
-	apitype := openapiclient.APIType("preview") // APIType | The API type (preview, fetch).
+	apitype := agilityClient.APIType("preview") // APIType | The API type (preview, fetch).
 	lastModifiedDate := "lastModifiedDate_example" // string | The last modified date/time that the Models list was updated, eg: 2020-09-24T10:00:00.00-04:00. (optional)
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 	resp, r, err := apiClient.ContentModelsAPI.ContentmodelsGet(context.Background(), guid, apitype).LastModifiedDate(lastModifiedDate).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `ContentModelsAPI.ContentmodelsGet``: %v\n", err)

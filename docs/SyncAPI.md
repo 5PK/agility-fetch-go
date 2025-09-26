@@ -24,18 +24,18 @@ import (
 	"context"
 	"fmt"
 	"os"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func main() {
 	guid := "guid_example" // string | The instance GUID, available from the API Keys section.
-	apitype := openapiclient.APIType("preview") // APIType | The Type of API - fetch or preview.
+	apitype := agilityClient.APIType("preview") // APIType | The Type of API - fetch or preview.
 	locale := "locale_example" // string | The locale code you want to sync content items for.
 	syncToken := int64(789) // int64 | The token from the most recently synced value. (optional)
 	pageSize := int32(56) // int32 | The number of items to return per set. (optional) (default to 500)
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 	resp, r, err := apiClient.SyncAPI.SyncItemsGet(context.Background(), guid, apitype, locale).SyncToken(syncToken).PageSize(pageSize).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `SyncAPI.SyncItemsGet``: %v\n", err)
@@ -102,18 +102,18 @@ import (
 	"context"
 	"fmt"
 	"os"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func main() {
 	guid := "guid_example" // string | The instance GUID, available from the API Keys section.
-	apitype := openapiclient.APIType("preview") // APIType | The Type of API - fetch or preview.
+	apitype := agilityClient.APIType("preview") // APIType | The Type of API - fetch or preview.
 	locale := "locale_example" // string | The locale code you want to sync pages for.
 	syncToken := int64(789) // int64 | The token from the most recently synced value. (optional)
 	pageSize := int32(56) // int32 | The number of items to return per set. (optional) (default to 500)
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 	resp, r, err := apiClient.SyncAPI.SyncPagesGet(context.Background(), guid, apitype, locale).SyncToken(syncToken).PageSize(pageSize).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `SyncAPI.SyncPagesGet``: %v\n", err)

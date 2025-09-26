@@ -23,19 +23,19 @@ import (
 	"context"
 	"fmt"
 	"os"
-	agilityClient "agility-fetch-go"
+	agilityClient "github.com/5PK/agility-fetch-go"
 )
 
 func main() {
 	guid := "guid_example" // string | The instance GUID, available from the API Keys section.
-	apitype := openapiclient.APIType("preview") // APIType | The API type (preview, fetch).
+	apitype := agilityClient.APIType("preview") // APIType | The API type (preview, fetch).
 	locale := "locale_example" // string | The locale code you want to retrieve content for.
 	id := int32(56) // int32 | The contentID of the requested item in this locale.
 	contentLinkDepth := int32(56) // int32 | The maximum level to expand linked content from this item (optional) (default to 1)
 	expandAllContentLinks := true // bool | Whether or not to expand entire linked content references, includings lists and items that are rendered in the CMS as Grid or Link. (optional) (default to false)
 
-	configuration := openapiclient.NewConfiguration()
-	apiClient := openapiclient.NewAPIClient(configuration)
+	configuration := agilityClient.NewConfiguration()
+	apiClient := agilityClient.NewAPIClient(configuration)
 	resp, r, err := apiClient.ItemAPI.ItemIdGet(context.Background(), guid, apitype, locale, id).ContentLinkDepth(contentLinkDepth).ExpandAllContentLinks(expandAllContentLinks).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `ItemAPI.ItemIdGet``: %v\n", err)
