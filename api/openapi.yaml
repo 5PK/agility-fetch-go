@@ -1,0 +1,1811 @@
+openapi: 3.0.1
+info:
+  contact:
+    name: Get Help
+    url: https://help.agilitycms.com
+  description: "Agility CMS REST API for retrieving content from the Agility CMS.\
+    \  The API Types are fetch (for published content) and preview (for latest, or\
+    \ staging content)."
+  title: Agility CMS REST API
+  version: v1
+servers:
+- url: /
+security:
+- APIKeyAuthorization: []
+paths:
+  /{guid}/{apitype}/contentmodels:
+    get:
+      parameters:
+      - description: "The instance GUID, available from the API Keys section."
+        explode: false
+        in: path
+        name: guid
+        required: true
+        schema:
+          description: "The instance GUID, available from the API Keys section."
+          nullable: true
+          type: string
+        style: simple
+      - description: "The API type (preview, fetch)."
+        explode: false
+        in: path
+        name: apitype
+        required: true
+        schema:
+          $ref: "#/components/schemas/APIType"
+        style: simple
+      - description: "The last modified date/time that the Models list was updated,\
+          \ eg: 2020-09-24T10:00:00.00-04:00."
+        explode: true
+        in: query
+        name: lastModifiedDate
+        required: false
+        schema:
+          description: "The last modified date/time that the Models list was updated,\
+            \ eg: 2020-09-24T10:00:00.00-04:00."
+          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/AgilityDefinition"
+                type: array
+          description: Success
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResult"
+          description: Not Found
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmptyResult"
+          description: Unauthorized
+      summary: Returns content models for the Agility instance.
+      tags:
+      - ContentModels
+  /{guid}/{apitype}/gallery/{id}:
+    get:
+      parameters:
+      - description: "The instance GUID, available from the API Keys section."
+        explode: false
+        in: path
+        name: guid
+        required: true
+        schema:
+          description: "The instance GUID, available from the API Keys section."
+          nullable: true
+          type: string
+        style: simple
+      - description: The Type of API - fetch or preview.
+        explode: false
+        in: path
+        name: apitype
+        required: true
+        schema:
+          $ref: "#/components/schemas/APIType"
+        style: simple
+      - description: The galleryID of the requested gallery.
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          description: The galleryID of the requested gallery.
+          format: int32
+          type: integer
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeadlessGallery"
+          description: Returns the gallery.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResult"
+          description: The gallery is not found.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmptyResult"
+          description: The request could not be authorized. Invalid or missing apiKey.
+      summary: Gets the gallery by ID.
+      tags:
+      - Gallery
+  /{guid}/{apitype}/{locale}/item/{id}:
+    get:
+      parameters:
+      - description: "The instance GUID, available from the API Keys section."
+        explode: false
+        in: path
+        name: guid
+        required: true
+        schema:
+          description: "The instance GUID, available from the API Keys section."
+          nullable: true
+          type: string
+        style: simple
+      - description: "The API type (preview, fetch)."
+        explode: false
+        in: path
+        name: apitype
+        required: true
+        schema:
+          $ref: "#/components/schemas/APIType"
+        style: simple
+      - description: The locale code you want to retrieve content for.
+        explode: false
+        in: path
+        name: locale
+        required: true
+        schema:
+          description: The locale code you want to retrieve content for.
+          nullable: true
+          type: string
+        style: simple
+      - description: The contentID of the requested item in this locale.
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          description: The contentID of the requested item in this locale.
+          format: int32
+          type: integer
+        style: simple
+      - description: The maximum level to expand linked content from this item
+        explode: true
+        in: query
+        name: contentLinkDepth
+        required: false
+        schema:
+          default: 1
+          description: The maximum level to expand linked content from this item
+          format: int32
+          type: integer
+        style: form
+      - description: "Whether or not to expand entire linked content references, includings\
+          \ lists and items that are rendered in the CMS as Grid or Link."
+        explode: true
+        in: query
+        name: expandAllContentLinks
+        required: false
+        schema:
+          default: false
+          description: "Whether or not to expand entire linked content references,\
+            \ includings lists and items that are rendered in the CMS as Grid or Link."
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeadlessContentItem"
+          description: Returns the content item.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResult"
+          description: "The content item is not found. If quering production, ensure\
+            \ the item has been published."
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmptyResult"
+          description: The request could not be authorized. Invalid or missing apiKey.
+      summary: Gets the details of a content item by ther Content ID.
+      tags:
+      - Item
+  /{guid}/{apitype}/{locale}/list/{referenceName}:
+    get:
+      parameters:
+      - description: "The instance GUID, available from the API Keys section."
+        explode: false
+        in: path
+        name: guid
+        required: true
+        schema:
+          description: "The instance GUID, available from the API Keys section."
+          nullable: true
+          type: string
+        style: simple
+      - description: "The API type (preview, fetch)."
+        explode: false
+        in: path
+        name: apitype
+        required: true
+        schema:
+          $ref: "#/components/schemas/APIType"
+        style: simple
+      - description: The locale code you want to retrieve content for.
+        explode: false
+        in: path
+        name: locale
+        required: true
+        schema:
+          description: The locale code you want to retrieve content for.
+          nullable: true
+          type: string
+        style: simple
+      - description: The unique reference name of the content list you wish to retrieve
+          in the current locale. Reference names must be ALL lowercase.
+        explode: false
+        in: path
+        name: referenceName
+        required: true
+        schema:
+          description: The unique reference name of the content list you wish to retrieve
+            in the current locale. Reference names must be ALL lowercase.
+          nullable: true
+          type: string
+        style: simple
+      - description: "[Optional] The depth of list items. Maximum allowed is 5."
+        explode: true
+        in: query
+        name: ContentLinkDepth
+        required: false
+        schema:
+          description: "[Optional] The depth of list items. Maximum allowed is 5."
+          format: int32
+          type: integer
+        style: form
+      - description: "[Optional] Whether or not to expand entire linked content references,\
+          \ includings lists and items that are rendered in the CMS as Grid or Link."
+        explode: true
+        in: query
+        name: ExpandAllContentLinks
+        required: false
+        schema:
+          description: "[Optional] Whether or not to expand entire linked content\
+            \ references, includings lists and items that are rendered in the CMS\
+            \ as Grid or Link."
+          type: boolean
+        style: form
+      - description: "[Optional] A comma separated list of the fields to return."
+        explode: true
+        in: query
+        name: Fields
+        required: false
+        schema:
+          description: "[Optional] A comma separated list of the fields to return."
+          nullable: true
+          type: string
+        style: form
+      - description: "[Optional] The maximum number of items to retrieve in this request.\
+          \ Default is 10. Maximum allowed is 250."
+        explode: true
+        in: query
+        name: Take
+        required: false
+        schema:
+          description: "[Optional] The maximum number of items to retrieve in this\
+            \ request. Default is 10. Maximum allowed is 250."
+          format: int32
+          type: integer
+        style: form
+      - description: "[Optional] The number of items to skip from the list. Default\
+          \ is 0. Used for implementing pagination."
+        explode: true
+        in: query
+        name: Skip
+        required: false
+        schema:
+          description: "[Optional] The number of items to skip from the list. Default\
+            \ is 0. Used for implementing pagination."
+          format: int32
+          type: integer
+        style: form
+      - description: "[Optional] The filter you wish to apply to the list query. Supports\
+          \ [eq (Equal To), ne (Not Equal), lt (Less Than), lte (Less Than or Equal),\
+          \ gt (Greater Than), gte (Greater Than or Equal)]. Example value: `fields.title[eq]\"\
+          some title\" or fields.details[like]\"some text\"`"
+        explode: true
+        in: query
+        name: Filter
+        required: false
+        schema:
+          description: "[Optional] The filter you wish to apply to the list query.\
+            \ Supports [eq (Equal To), ne (Not Equal), lt (Less Than), lte (Less Than\
+            \ or Equal), gt (Greater Than), gte (Greater Than or Equal)]. Example\
+            \ value: `fields.title[eq]\"some title\" or fields.details[like]\"some\
+            \ text\"`"
+          example: ""
+          nullable: true
+          type: string
+        style: form
+      - description: "[Optional] The field to sort the results by. Example fields.title\
+          \ or properties.created, seo.metaDescription"
+        explode: true
+        in: query
+        name: Sort
+        required: false
+        schema:
+          description: "[Optional] The field to sort the results by. Example fields.title\
+            \ or properties.created, seo.metaDescription"
+          example: ""
+          nullable: true
+          type: string
+        style: form
+      - description: "[Optional] The direction to sort the results by. Default is\
+          \ asc. Valid values are asc, desc."
+        explode: true
+        in: query
+        name: Direction
+        required: false
+        schema:
+          description: "[Optional] The direction to sort the results by. Default is\
+            \ asc. Valid values are asc, desc."
+          example: ""
+          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeadlessContentListResponse"
+          description: Returns the content list.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmptyResult"
+          description: The request could not be authorized. Invalid or missing apiKey.
+        "404":
+          description: "The content list is not found. If quering production, ensure\
+            \ at least one item in the list has been published."
+      summary: Retrieves a list of content items by reference name.
+      tags:
+      - List
+  /{guid}/{apitype}/{locale}/page/{id}:
+    get:
+      parameters:
+      - description: "The instance GUID, available from the API Keys section."
+        explode: false
+        in: path
+        name: guid
+        required: true
+        schema:
+          description: "The instance GUID, available from the API Keys section."
+          nullable: true
+          type: string
+        style: simple
+      - description: "The API type (preview, fetch)."
+        explode: false
+        in: path
+        name: apitype
+        required: true
+        schema:
+          $ref: "#/components/schemas/APIType"
+        style: simple
+      - description: The locale code you want to retrieve content for.
+        explode: false
+        in: path
+        name: locale
+        required: true
+        schema:
+          description: The locale code you want to retrieve content for.
+          nullable: true
+          type: string
+        style: simple
+      - description: The unique page ID of the page you wish to retrieve in the current
+          locale.
+        explode: false
+        in: path
+        name: id
+        required: true
+        schema:
+          description: The unique page ID of the page you wish to retrieve in the
+            current locale.
+          format: int32
+          type: integer
+        style: simple
+      - description: The maximum level to expand linked content from this item
+        explode: true
+        in: query
+        name: contentLinkDepth
+        required: false
+        schema:
+          default: 2
+          description: The maximum level to expand linked content from this item
+          format: int32
+          type: integer
+        style: form
+      - description: "Whether or not to expand entire linked content references, includings\
+          \ lists and items that are rendered in the CMS as Grid or Link and linked\
+          \ to modules or linked items on this page."
+        explode: true
+        in: query
+        name: expandAllContentLinks
+        required: false
+        schema:
+          default: false
+          description: "Whether or not to expand entire linked content references,\
+            \ includings lists and items that are rendered in the CMS as Grid or Link\
+            \ and linked to modules or linked items on this page."
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeadlessContentPage"
+          description: Returns the page item.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResult"
+          description: "The page item is not found. If quering production, ensure\
+            \ the page has been published."
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmptyResult"
+          description: The request could not be authorized. Invalid or missing apiKey.
+      summary: Gets the details of a page by its Page ID.
+      tags:
+      - Page
+  /{guid}/{apitype}/{locale}/page/{channel}:
+    get:
+      parameters:
+      - description: "The instance GUID, available from the API Keys section."
+        explode: false
+        in: path
+        name: guid
+        required: true
+        schema:
+          description: "The instance GUID, available from the API Keys section."
+          nullable: true
+          type: string
+        style: simple
+      - description: "The API type (preview, fetch)."
+        explode: false
+        in: path
+        name: apitype
+        required: true
+        schema:
+          $ref: "#/components/schemas/APIType"
+        style: simple
+      - description: The locale code you want to retrieve content for.
+        explode: false
+        in: path
+        name: locale
+        required: true
+        schema:
+          description: The locale code you want to retrieve content for.
+          nullable: true
+          type: string
+        style: simple
+      - description: The path of the page
+        explode: true
+        in: query
+        name: path
+        required: false
+        schema:
+          description: The path of the page
+          nullable: true
+          type: string
+        style: form
+      - description: "The reference name of the digital channel of the sitemap to\
+          \ return. If you only have one channel, your channel reference name is likely\
+          \ 'website'."
+        explode: false
+        in: path
+        name: channel
+        required: true
+        schema:
+          description: "The reference name of the digital channel of the sitemap to\
+            \ return. If you only have one channel, your channel reference name is\
+            \ likely 'website'."
+          nullable: true
+          type: string
+        style: simple
+      - description: The maximum level to expand linked content from this item
+        explode: true
+        in: query
+        name: contentLinkDepth
+        required: false
+        schema:
+          default: 2
+          description: The maximum level to expand linked content from this item
+          format: int32
+          type: integer
+        style: form
+      - description: "Whether or not to expand entire linked content references, includings\
+          \ lists and items that are rendered in the CMS as Grid or Link and linked\
+          \ to modules or linked items on this page."
+        explode: true
+        in: query
+        name: expandAllContentLinks
+        required: false
+        schema:
+          default: false
+          description: "Whether or not to expand entire linked content references,\
+            \ includings lists and items that are rendered in the CMS as Grid or Link\
+            \ and linked to modules or linked items on this page."
+          type: boolean
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeadlessContentPageByPath"
+          description: Returns the page item.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResult"
+          description: "The page item is not found. If quering production, ensure\
+            \ the page has been published."
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmptyResult"
+          description: The request could not be authorized. Invalid or missing apiKey.
+      summary: "Gets the details of a page by its Page path, in a specific channel."
+      tags:
+      - Page
+  /{guid}/{apitype}/{locale}/sitemap/flat/{channelName}:
+    get:
+      parameters:
+      - description: "The instance GUID, available from the API Keys section."
+        explode: false
+        in: path
+        name: guid
+        required: true
+        schema:
+          description: "The instance GUID, available from the API Keys section."
+          nullable: true
+          type: string
+        style: simple
+      - description: The Type of API - fetch or preview.
+        explode: false
+        in: path
+        name: apitype
+        required: true
+        schema:
+          $ref: "#/components/schemas/APIType"
+        style: simple
+      - description: The locale code you want to retreive content for
+        explode: false
+        in: path
+        name: locale
+        required: true
+        schema:
+          description: The locale code you want to retreive content for
+          nullable: true
+          type: string
+        style: simple
+      - description: "The reference name of the digital channel of the sitemap to\
+          \ return. If you only have one channel, your channel reference name is likely\
+          \ 'website'."
+        explode: false
+        in: path
+        name: channelName
+        required: true
+        schema:
+          description: "The reference name of the digital channel of the sitemap to\
+            \ return. If you only have one channel, your channel reference name is\
+            \ likely 'website'."
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                additionalProperties:
+                  $ref: "#/components/schemas/HeadlessContentSiteMapItem"
+                type: object
+          description: Returns the sitemap.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResult"
+          description: "The page item is not found. If quering production, ensure\
+            \ the page has been published."
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmptyResult"
+          description: The request could not be authorized. Invalid or missing apiKey.
+      summary: "Gets the sitemap, returned in a flat list, where the dictionary key\
+        \ is the page path. This method is ideal for page routing."
+      tags:
+      - Sitemap
+  /{guid}/{apitype}/{locale}/sitemap/nested/{channelName}:
+    get:
+      parameters:
+      - description: "The instance GUID, available from the API Keys section."
+        explode: false
+        in: path
+        name: guid
+        required: true
+        schema:
+          description: "The instance GUID, available from the API Keys section."
+          nullable: true
+          type: string
+        style: simple
+      - description: The Type of API - fetch or preview.
+        explode: false
+        in: path
+        name: apitype
+        required: true
+        schema:
+          $ref: "#/components/schemas/APIType"
+        style: simple
+      - description: The locale code you want to retreive content for
+        explode: false
+        in: path
+        name: locale
+        required: true
+        schema:
+          description: The locale code you want to retreive content for
+          nullable: true
+          type: string
+        style: simple
+      - description: "The reference name of the digital channel of the sitemap to\
+          \ return. If you only have one channel, your channel reference name is likely\
+          \ 'website'."
+        explode: false
+        in: path
+        name: channelName
+        required: true
+        schema:
+          description: "The reference name of the digital channel of the sitemap to\
+            \ return. If you only have one channel, your channel reference name is\
+            \ likely 'website'."
+          nullable: true
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/HeadlessContentSiteMapNestedItem"
+                type: array
+          description: Returns the sitemap.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResult"
+          description: "The page item is not found. If quering production, ensure\
+            \ the page has been published."
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmptyResult"
+          description: The request could not be authorized. Invalid or missing apiKey.
+      summary: "Gets the sitemap as an array in a nested format, ideal for generating\
+        \ menus."
+      tags:
+      - Sitemap
+  /{guid}/{apitype}/{locale}/sync/items:
+    get:
+      parameters:
+      - description: "The instance GUID, available from the API Keys section."
+        explode: false
+        in: path
+        name: guid
+        required: true
+        schema:
+          description: "The instance GUID, available from the API Keys section."
+          nullable: true
+          type: string
+        style: simple
+      - description: The Type of API - fetch or preview.
+        explode: false
+        in: path
+        name: apitype
+        required: true
+        schema:
+          $ref: "#/components/schemas/APIType"
+        style: simple
+      - description: The locale code you want to sync content items for.
+        explode: false
+        in: path
+        name: locale
+        required: true
+        schema:
+          description: The locale code you want to sync content items for.
+          nullable: true
+          type: string
+        style: simple
+      - description: The token from the most recently synced value.
+        explode: true
+        in: query
+        name: syncToken
+        required: false
+        schema:
+          description: The token from the most recently synced value.
+          format: int64
+          nullable: true
+          type: integer
+        style: form
+      - description: The number of items to return per set.
+        explode: true
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          default: 500
+          description: The number of items to return per set.
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeadlessContentItemHeadlessSync"
+          description: Returns the content items.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResult"
+          description: Not Found
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmptyResult"
+          description: The request could not be authorized. Invalid or missing apiKey.
+      summary: "Retrieves all content items in a paged format.\r\nEach call returns\
+        \ a sync token that should be persisted and passed into subsequent requests\
+        \ to maintain sync state."
+      tags:
+      - Sync
+  /{guid}/{apitype}/{locale}/sync/pages:
+    get:
+      parameters:
+      - description: "The instance GUID, available from the API Keys section."
+        explode: false
+        in: path
+        name: guid
+        required: true
+        schema:
+          description: "The instance GUID, available from the API Keys section."
+          nullable: true
+          type: string
+        style: simple
+      - description: The Type of API - fetch or preview.
+        explode: false
+        in: path
+        name: apitype
+        required: true
+        schema:
+          $ref: "#/components/schemas/APIType"
+        style: simple
+      - description: The locale code you want to sync pages for.
+        explode: false
+        in: path
+        name: locale
+        required: true
+        schema:
+          description: The locale code you want to sync pages for.
+          nullable: true
+          type: string
+        style: simple
+      - description: The token from the most recently synced value.
+        explode: true
+        in: query
+        name: syncToken
+        required: false
+        schema:
+          description: The token from the most recently synced value.
+          format: int64
+          nullable: true
+          type: integer
+        style: form
+      - description: The number of items to return per set.
+        explode: true
+        in: query
+        name: pageSize
+        required: false
+        schema:
+          default: 500
+          description: The number of items to return per set.
+          format: int32
+          type: integer
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HeadlessContentPageHeadlessSync"
+          description: Returns the pages.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResult"
+          description: Not Found
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmptyResult"
+          description: The request could not be authorized. Invalid or missing apiKey.
+      summary: "Retrieves all pages items in a paged format.\r\nEach call returns\
+        \ a sync token that should be persisted and passed into subsequent requests\
+        \ to maintain sync state."
+      tags:
+      - Sync
+  /{guid}/{apitype}/urlredirection:
+    get:
+      parameters:
+      - description: "The instance GUID, available from the API Keys section."
+        explode: false
+        in: path
+        name: guid
+        required: true
+        schema:
+          description: "The instance GUID, available from the API Keys section."
+          nullable: true
+          type: string
+        style: simple
+      - description: The Type of API - fetch or preview.
+        explode: false
+        in: path
+        name: apitype
+        required: true
+        schema:
+          $ref: "#/components/schemas/APIType"
+        style: simple
+      - description: "The last access date/time that the URL Redirections list was\
+          \ previously accessed, eg: 2020-09-24T10:00:00.00-04:00."
+        explode: true
+        in: query
+        name: lastAccessDate
+        required: false
+        schema:
+          description: "The last access date/time that the URL Redirections list was\
+            \ previously accessed, eg: 2020-09-24T10:00:00.00-04:00."
+          format: date-time
+          nullable: true
+          type: string
+        style: form
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/UrlRedirection"
+                type: array
+          description: Returns the list.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotFoundResult"
+          description: The list is not found.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmptyResult"
+          description: The request could not be authorized. Invalid or missing apiKey.
+      summary: Gets the list of all URL Redirections since a particular date/time.
+        Persist the lastAccessDate that is returned and use that value to maintain
+        state on subsequent requests.
+      tags:
+      - UrlRedirection
+components:
+  schemas:
+    APIType:
+      enum:
+      - preview
+      - fetch
+      type: string
+    AgilityFieldType:
+      enum:
+      - 0
+      - 1
+      - 2
+      - 3
+      - 4
+      - 5
+      - 6
+      - 7
+      - 8
+      - 9
+      - 10
+      - 11
+      - 12
+      - 13
+      - 14
+      - 15
+      - 16
+      format: int32
+      type: integer
+    AgilityField:
+      additionalProperties: false
+      example:
+        settings:
+          key: settings
+        name: name
+        label: label
+        type: 6
+      properties:
+        name:
+          nullable: true
+          type: string
+        label:
+          nullable: true
+          type: string
+        type:
+          $ref: "#/components/schemas/AgilityFieldType"
+        settings:
+          additionalProperties:
+            type: string
+          nullable: true
+          type: object
+      type: object
+    AgilityDefinition:
+      additionalProperties: false
+      example:
+        modelId: 0
+        lastModifiedDate: 2000-01-23T04:56:07.000+00:00
+        displayName: displayName
+        contentReferenceNames:
+        - contentReferenceNames
+        - contentReferenceNames
+        name: name
+        guid: guid
+        id: id
+        fields:
+        - settings:
+            key: settings
+          name: name
+          label: label
+          type: 6
+        - settings:
+            key: settings
+          name: name
+          label: label
+          type: 6
+        referenceName: referenceName
+      properties:
+        id:
+          nullable: true
+          type: string
+        modelId:
+          format: int32
+          type: integer
+        guid:
+          nullable: true
+          type: string
+        lastModifiedDate:
+          format: date-time
+          type: string
+        displayName:
+          nullable: true
+          type: string
+        referenceName:
+          nullable: true
+          type: string
+        name:
+          nullable: true
+          type: string
+        contentReferenceNames:
+          items:
+            type: string
+          nullable: true
+          type: array
+        fields:
+          items:
+            $ref: "#/components/schemas/AgilityField"
+          nullable: true
+          type: array
+      type: object
+    NotFoundResult:
+      additionalProperties: false
+      example:
+        statusCode: 1
+      properties:
+        statusCode:
+          format: int32
+          readOnly: true
+          type: integer
+      type: object
+    EmptyResult:
+      additionalProperties: false
+      type: object
+    HeadlessMediaItem:
+      additionalProperties: false
+      example:
+        metaData:
+          key: metaData
+        fileName: fileName
+        modifiedOn: 2000-01-23T04:56:07.000+00:00
+        size: 1
+        mediaID: 6
+        url: url
+      properties:
+        mediaID:
+          description: media Id.
+          format: int32
+          type: integer
+        fileName:
+          description: Media item file name.
+          nullable: true
+          type: string
+        url:
+          description: Url that media item can be accessed at.
+          nullable: true
+          type: string
+        size:
+          description: Size of media item in bytes.
+          format: int32
+          type: integer
+        modifiedOn:
+          description: Last modified date.
+          format: date-time
+          type: string
+        metaData:
+          additionalProperties:
+            type: string
+          description: List of meta data related to media item in key value format.
+          nullable: true
+          type: object
+      type: object
+    HeadlessGallery:
+      additionalProperties: false
+      example:
+        galleryId: 0
+        name: name
+        count: 5
+        description: description
+        media:
+        - metaData:
+            key: metaData
+          fileName: fileName
+          modifiedOn: 2000-01-23T04:56:07.000+00:00
+          size: 1
+          mediaID: 6
+          url: url
+        - metaData:
+            key: metaData
+          fileName: fileName
+          modifiedOn: 2000-01-23T04:56:07.000+00:00
+          size: 1
+          mediaID: 6
+          url: url
+      properties:
+        galleryId:
+          description: Gallery ID.
+          format: int32
+          type: integer
+        name:
+          description: Gallery name.
+          nullable: true
+          type: string
+        description:
+          description: Gallery description.
+          nullable: true
+          type: string
+        media:
+          description: List of Media items in gallery.
+          items:
+            $ref: "#/components/schemas/HeadlessMediaItem"
+          nullable: true
+          type: array
+        count:
+          format: int32
+          type: integer
+      type: object
+    HeadlessContentItem:
+      additionalProperties: false
+      example:
+        contentID: 10
+        fields:
+          key: ""
+        seo:
+          key: ""
+        properties:
+          key: ""
+      properties:
+        contentID:
+          description: The unique ID of the content item in this locale.
+          example: 10
+          format: int32
+          type: integer
+        properties:
+          additionalProperties: {}
+          description: The system properties of the content item.
+          nullable: true
+          type: object
+        fields:
+          additionalProperties: {}
+          description: A dictionary of the fields and the values of the content item.
+          nullable: true
+          type: object
+        seo:
+          additionalProperties: {}
+          description: SEO related fields for the content item. This is only returned
+            for Dynamic Page Items.
+          nullable: true
+          type: object
+      type: object
+    HeadlessContentListResponse:
+      additionalProperties: false
+      example:
+        totalCount: 20
+        items:
+        - contentID: 10
+          fields:
+            key: ""
+          seo:
+            key: ""
+          properties:
+            key: ""
+        - contentID: 10
+          fields:
+            key: ""
+          seo:
+            key: ""
+          properties:
+            key: ""
+      properties:
+        items:
+          description: The paginated items returned from the query.
+          items:
+            $ref: "#/components/schemas/HeadlessContentItem"
+          nullable: true
+          type: array
+        totalCount:
+          description: The total number of items in the list (excluding any pagination).
+          example: 20
+          format: int32
+          type: integer
+      type: object
+    HeadlessContentPageVisibility:
+      additionalProperties: false
+      example:
+        menu: true
+        sitemap: true
+      properties:
+        menu:
+          description: Indicates if page is visible in the menu.
+          type: boolean
+        sitemap:
+          description: Indicates if the page is visible in the sitemap.
+          type: boolean
+      type: object
+    HeadlessContentItemSeo:
+      additionalProperties: false
+      example:
+        metaHTML: <meta name="robots" content="noindex" />
+        metaKeywords: "Agility, Fast, Nimble"
+        metaDescription: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr,\
+          \ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam\
+          \ erat, sed diam voluptua."
+      properties:
+        metaDescription:
+          description: The meta description for this static/dynamic page.
+          example: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam\
+            \ nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,\
+            \ sed diam voluptua."
+          nullable: true
+          type: string
+        metaKeywords:
+          description: The meta keywords for this static/dynamic page.
+          example: "Agility, Fast, Nimble"
+          nullable: true
+          type: string
+        metaHTML:
+          description: Additional markup to be included in the *head* element of the
+            page.
+          example: <meta name="robots" content="noindex" />
+          nullable: true
+          type: string
+      type: object
+    HeadlessContentScripts:
+      additionalProperties: false
+      example:
+        excludedFromGlobal: true
+        top: top
+        bottom: bottom
+      properties:
+        excludedFromGlobal:
+          description: Indicates if scripts are excluded from global.
+          type: boolean
+        top:
+          description: Scripts to include on top of the page.
+          nullable: true
+          type: string
+        bottom:
+          description: Scripts to include on the bottom of the page.
+          nullable: true
+          type: string
+      type: object
+    HeadlessContentItemProperties:
+      additionalProperties: false
+      example:
+        versionID: 101
+        definitionName: Article
+        syncToken: 6
+        created: 2000-01-23T04:56:07.000+00:00
+        modified: 2000-01-23T04:56:07.000+00:00
+        state: 2
+        referenceName: News
+      properties:
+        state:
+          description: "The state of this content item. 1 = Staging, 2 = Published,\
+            \ 3 = Deleted, 4 = Approved, 5 = AwaitingApproval, 6 = Declined, 7 = Unpublished"
+          example: 2
+          format: int32
+          type: integer
+        modified:
+          description: The date/time the item was last modified
+          format: date-time
+          type: string
+        created:
+          description: The date/time this item was last modified.
+          format: date-time
+          type: string
+        versionID:
+          description: The unique versionID of this content item.
+          example: 101
+          format: int32
+          type: integer
+        referenceName:
+          description: "The reference name of this item is part of. This may be the\
+            \ reference name of a content list, item, or module."
+          example: News
+          nullable: true
+          type: string
+        definitionName:
+          description: The reference name of the content/module definition this item
+            is based on.
+          example: Article
+          nullable: true
+          type: string
+        syncToken:
+          description: Used for sync tracking.
+          format: int64
+          type: integer
+      type: object
+    HeadlessContentZone:
+      additionalProperties: false
+      example:
+        item:
+          contentID: 10
+          fields:
+            key: ""
+          seo:
+            key: ""
+          properties:
+            key: ""
+        module: module
+      properties:
+        module:
+          description: Name of the module
+          nullable: true
+          type: string
+        item:
+          $ref: "#/components/schemas/HeadlessContentItem"
+      type: object
+    HeadlessContentPage:
+      additionalProperties: false
+      example:
+        visible:
+          menu: true
+          sitemap: true
+        redirectUrl: redirectUrl
+        pageID: 0
+        title: title
+        zones:
+          key:
+          - item:
+              contentID: 10
+              fields:
+                key: ""
+              seo:
+                key: ""
+              properties:
+                key: ""
+            module: module
+          - item:
+              contentID: 10
+              fields:
+                key: ""
+              seo:
+                key: ""
+              properties:
+                key: ""
+            module: module
+        securePage: true
+        menuText: menuText
+        path: path
+        excludeFromOutputCache: true
+        templateName: templateName
+        name: name
+        seo:
+          metaHTML: <meta name="robots" content="noindex" />
+          metaKeywords: "Agility, Fast, Nimble"
+          metaDescription: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr,\
+            \ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam\
+            \ erat, sed diam voluptua."
+        scripts:
+          excludedFromGlobal: true
+          top: top
+          bottom: bottom
+        properties:
+          versionID: 101
+          definitionName: Article
+          syncToken: 6
+          created: 2000-01-23T04:56:07.000+00:00
+          modified: 2000-01-23T04:56:07.000+00:00
+          state: 2
+          referenceName: News
+      properties:
+        pageID:
+          description: ID of the page.
+          format: int32
+          type: integer
+        name:
+          description: Page name.
+          nullable: true
+          type: string
+        path:
+          description: Path of the page.
+          nullable: true
+          type: string
+        title:
+          description: Title of the page.
+          nullable: true
+          type: string
+        menuText:
+          description: Menu text for the page.
+          nullable: true
+          type: string
+        visible:
+          $ref: "#/components/schemas/HeadlessContentPageVisibility"
+        templateName:
+          description: Name of the template used to create the page.
+          nullable: true
+          type: string
+        redirectUrl:
+          description: Redirect url of the page.
+          nullable: true
+          type: string
+        securePage:
+          description: Indicates if the page is secure.
+          type: boolean
+        excludeFromOutputCache:
+          description: Indicates if the page is excluded from cache.
+          type: boolean
+        seo:
+          $ref: "#/components/schemas/HeadlessContentItemSeo"
+        scripts:
+          $ref: "#/components/schemas/HeadlessContentScripts"
+        properties:
+          $ref: "#/components/schemas/HeadlessContentItemProperties"
+        zones:
+          additionalProperties:
+            items:
+              $ref: "#/components/schemas/HeadlessContentZone"
+            type: array
+          description: Zones on the page defined by the template
+          nullable: true
+          type: object
+      type: object
+    HeadlessContentPageBase:
+      additionalProperties: false
+      example:
+        path: path
+        visible:
+          menu: true
+          sitemap: true
+        name: name
+        pageID: 0
+        title: title
+        menuText: menuText
+      properties:
+        pageID:
+          description: ID of the page.
+          format: int32
+          type: integer
+        name:
+          description: Page name.
+          nullable: true
+          type: string
+        path:
+          description: Path of the page.
+          nullable: true
+          type: string
+        title:
+          description: Title of the page.
+          nullable: true
+          type: string
+        menuText:
+          description: Menu text for the page.
+          nullable: true
+          type: string
+        visible:
+          $ref: "#/components/schemas/HeadlessContentPageVisibility"
+      type: object
+    HeadlessContentPageByPath:
+      additionalProperties: false
+      example:
+        sitemapNode:
+          path: path
+          visible:
+            menu: true
+            sitemap: true
+          name: name
+          pageID: 0
+          title: title
+          menuText: menuText
+        page:
+          visible:
+            menu: true
+            sitemap: true
+          redirectUrl: redirectUrl
+          pageID: 0
+          title: title
+          zones:
+            key:
+            - item:
+                contentID: 10
+                fields:
+                  key: ""
+                seo:
+                  key: ""
+                properties:
+                  key: ""
+              module: module
+            - item:
+                contentID: 10
+                fields:
+                  key: ""
+                seo:
+                  key: ""
+                properties:
+                  key: ""
+              module: module
+          securePage: true
+          menuText: menuText
+          path: path
+          excludeFromOutputCache: true
+          templateName: templateName
+          name: name
+          seo:
+            metaHTML: <meta name="robots" content="noindex" />
+            metaKeywords: "Agility, Fast, Nimble"
+            metaDescription: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr,\
+              \ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam\
+              \ erat, sed diam voluptua."
+          scripts:
+            excludedFromGlobal: true
+            top: top
+            bottom: bottom
+          properties:
+            versionID: 101
+            definitionName: Article
+            syncToken: 6
+            created: 2000-01-23T04:56:07.000+00:00
+            modified: 2000-01-23T04:56:07.000+00:00
+            state: 2
+            referenceName: News
+      properties:
+        sitemapNode:
+          $ref: "#/components/schemas/HeadlessContentPageBase"
+        page:
+          $ref: "#/components/schemas/HeadlessContentPage"
+      type: object
+    RedirectUrl:
+      additionalProperties: false
+      example:
+        url: url
+        target: target
+      properties:
+        url:
+          description: Redirect Url.
+          nullable: true
+          type: string
+        target:
+          description: Target to open the Url in.
+          nullable: true
+          type: string
+      type: object
+    HeadlessContentSiteMapItem:
+      additionalProperties: false
+      properties:
+        pageID:
+          description: ID of the page.
+          format: int32
+          type: integer
+        name:
+          description: Page name.
+          nullable: true
+          type: string
+        path:
+          description: Path of the page.
+          nullable: true
+          type: string
+        title:
+          description: Title of the page.
+          nullable: true
+          type: string
+        menuText:
+          description: Menu text for the page.
+          nullable: true
+          type: string
+        visible:
+          $ref: "#/components/schemas/HeadlessContentPageVisibility"
+        redirect:
+          $ref: "#/components/schemas/RedirectUrl"
+        isFolder:
+          description: Indicates if the item is a folder.
+          type: boolean
+        contentID:
+          description: Content ID of the item.
+          format: int32
+          nullable: true
+          type: integer
+      type: object
+    HeadlessContentSiteMapNestedItem:
+      additionalProperties: false
+      example:
+        redirect:
+          url: url
+          target: target
+        path: path
+        isFolder: true
+        visible:
+          menu: true
+          sitemap: true
+        children:
+        - null
+        - null
+        name: name
+        contentID: 6
+        pageID: 0
+        title: title
+        menuText: menuText
+      properties:
+        pageID:
+          description: ID of the page.
+          format: int32
+          type: integer
+        name:
+          description: Page name.
+          nullable: true
+          type: string
+        path:
+          description: Path of the page.
+          nullable: true
+          type: string
+        title:
+          description: Title of the page.
+          nullable: true
+          type: string
+        menuText:
+          description: Menu text for the page.
+          nullable: true
+          type: string
+        visible:
+          $ref: "#/components/schemas/HeadlessContentPageVisibility"
+        redirect:
+          $ref: "#/components/schemas/RedirectUrl"
+        isFolder:
+          description: Indicates if the item is a folder.
+          type: boolean
+        contentID:
+          description: Content ID of the item.
+          format: int32
+          nullable: true
+          type: integer
+        children:
+          description: Children of this item
+          items:
+            $ref: "#/components/schemas/HeadlessContentSiteMapNestedItem"
+          nullable: true
+          type: array
+      type: object
+    HeadlessContentItemHeadlessSync:
+      additionalProperties: false
+      example:
+        syncToken: 0
+        items:
+        - contentID: 10
+          fields:
+            key: ""
+          seo:
+            key: ""
+          properties:
+            key: ""
+        - contentID: 10
+          fields:
+            key: ""
+          seo:
+            key: ""
+          properties:
+            key: ""
+      properties:
+        syncToken:
+          format: int64
+          type: integer
+        items:
+          items:
+            $ref: "#/components/schemas/HeadlessContentItem"
+          nullable: true
+          type: array
+      type: object
+    HeadlessContentPageHeadlessSync:
+      additionalProperties: false
+      example:
+        syncToken: 0
+        items:
+        - visible:
+            menu: true
+            sitemap: true
+          redirectUrl: redirectUrl
+          pageID: 0
+          title: title
+          zones:
+            key:
+            - item:
+                contentID: 10
+                fields:
+                  key: ""
+                seo:
+                  key: ""
+                properties:
+                  key: ""
+              module: module
+            - item:
+                contentID: 10
+                fields:
+                  key: ""
+                seo:
+                  key: ""
+                properties:
+                  key: ""
+              module: module
+          securePage: true
+          menuText: menuText
+          path: path
+          excludeFromOutputCache: true
+          templateName: templateName
+          name: name
+          seo:
+            metaHTML: <meta name="robots" content="noindex" />
+            metaKeywords: "Agility, Fast, Nimble"
+            metaDescription: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr,\
+              \ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam\
+              \ erat, sed diam voluptua."
+          scripts:
+            excludedFromGlobal: true
+            top: top
+            bottom: bottom
+          properties:
+            versionID: 101
+            definitionName: Article
+            syncToken: 6
+            created: 2000-01-23T04:56:07.000+00:00
+            modified: 2000-01-23T04:56:07.000+00:00
+            state: 2
+            referenceName: News
+        - visible:
+            menu: true
+            sitemap: true
+          redirectUrl: redirectUrl
+          pageID: 0
+          title: title
+          zones:
+            key:
+            - item:
+                contentID: 10
+                fields:
+                  key: ""
+                seo:
+                  key: ""
+                properties:
+                  key: ""
+              module: module
+            - item:
+                contentID: 10
+                fields:
+                  key: ""
+                seo:
+                  key: ""
+                properties:
+                  key: ""
+              module: module
+          securePage: true
+          menuText: menuText
+          path: path
+          excludeFromOutputCache: true
+          templateName: templateName
+          name: name
+          seo:
+            metaHTML: <meta name="robots" content="noindex" />
+            metaKeywords: "Agility, Fast, Nimble"
+            metaDescription: "Lorem ipsum dolor sit amet, consetetur sadipscing elitr,\
+              \ sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam\
+              \ erat, sed diam voluptua."
+          scripts:
+            excludedFromGlobal: true
+            top: top
+            bottom: bottom
+          properties:
+            versionID: 101
+            definitionName: Article
+            syncToken: 6
+            created: 2000-01-23T04:56:07.000+00:00
+            modified: 2000-01-23T04:56:07.000+00:00
+            state: 2
+            referenceName: News
+      properties:
+        syncToken:
+          format: int64
+          type: integer
+        items:
+          items:
+            $ref: "#/components/schemas/HeadlessContentPage"
+          nullable: true
+          type: array
+      type: object
+    UrlRedirection:
+      additionalProperties: false
+      example:
+        originUrl: originUrl
+        id: 0
+        destinationUrl: destinationUrl
+        statusCode: 6
+      properties:
+        id:
+          format: int32
+          type: integer
+        originUrl:
+          nullable: true
+          type: string
+        destinationUrl:
+          nullable: true
+          type: string
+        statusCode:
+          format: int32
+          type: integer
+      type: object
+  securitySchemes:
+    APIKeyAuthorization:
+      description: "Please enter your API Key for the API Type that you are accessing\
+        \ (fetch, preview)"
+      in: header
+      name: APIKey
+      type: apiKey
